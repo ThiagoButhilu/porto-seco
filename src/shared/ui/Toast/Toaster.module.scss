@@ -1,0 +1,90 @@
+@use 'mixins' as *;
+
+.region {
+  position: fixed;
+  z-index: 100;
+  right: var(--space-4);
+  bottom: var(--space-4);
+  left: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--space-2);
+  pointer-events: none;
+
+  @include up(md) {
+    left: auto;
+    width: 380px;
+  }
+}
+
+.toast {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  width: 100%;
+  padding: var(--space-3) var(--space-3) var(--space-3) var(--space-4);
+  background: var(--color-brand-900);
+  color: var(--color-text-inverse);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  pointer-events: auto;
+  animation: slide 0.25s var(--ease-out);
+}
+
+.icon {
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.success .icon {
+  color: #5fd39a;
+}
+
+.danger .icon {
+  color: #ff8a80;
+}
+
+.info .icon {
+  color: #8cb8ef;
+}
+
+.text {
+  flex: 1;
+  min-width: 0;
+}
+
+.title {
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.description {
+  margin-top: 2px;
+  font-size: 0.8125rem;
+  color: rgb(255 255 255 / 0.72);
+}
+
+.close {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: rgb(255 255 255 / 0.6);
+  cursor: pointer;
+
+  &:hover {
+    background: rgb(255 255 255 / 0.1);
+    color: #fff;
+  }
+}
+
+@keyframes slide {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+}

@@ -1,0 +1,101 @@
+@use 'mixins' as *;
+
+.group {
+  display: grid;
+  grid-auto-columns: 1fr;
+  grid-auto-flow: column;
+  gap: var(--space-2);
+}
+
+.option {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-height: var(--control-height);
+  padding: var(--space-2) var(--space-3);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition:
+    border-color 0.15s,
+    background-color 0.15s,
+    box-shadow 0.15s;
+
+  &:hover {
+    border-color: var(--color-text-muted);
+  }
+
+  &:has(input:focus-visible) {
+    @include focus-ring;
+  }
+
+  &:has(input:disabled) {
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+}
+
+.rich {
+  @include down(sm) {
+    grid-auto-flow: row;
+  }
+}
+
+.rich .option {
+  align-items: flex-start;
+  padding: var(--space-3);
+}
+
+.checked {
+  background: var(--color-brand-50);
+  border-color: var(--color-brand-600);
+  box-shadow: inset 0 0 0 1px var(--color-brand-600);
+
+  &:hover {
+    border-color: var(--color-brand-600);
+  }
+}
+
+.input {
+  @include visually-hidden;
+}
+
+.radio {
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  border: 1.5px solid var(--color-border-strong);
+  border-radius: 50%;
+  background: var(--color-surface);
+  transition:
+    border 0.15s,
+    box-shadow 0.15s;
+
+  .rich & {
+    margin-top: 1px;
+  }
+
+  .checked & {
+    border: 5px solid var(--color-brand-700);
+  }
+}
+
+.text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.label {
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.description {
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+  line-height: 1.35;
+}

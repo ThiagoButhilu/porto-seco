@@ -1,0 +1,88 @@
+@use 'mixins' as *;
+
+.tiles {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  @include up(lg) {
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--space-4);
+  }
+}
+
+.tile {
+  @include card;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  row-gap: 2px;
+  padding: var(--space-4);
+
+  @include up(md) {
+    padding: var(--space-5);
+  }
+
+  &[data-tone='brand'] {
+    --tone: var(--color-brand-700);
+    --tone-soft: var(--color-brand-100);
+  }
+
+  &[data-tone='success'] {
+    --tone: var(--color-success);
+    --tone-soft: var(--color-success-soft);
+  }
+
+  &[data-tone='info'] {
+    --tone: var(--color-info);
+    --tone-soft: var(--color-info-soft);
+  }
+
+  &[data-tone='danger'] {
+    --tone: var(--color-danger);
+    --tone-soft: var(--color-danger-soft);
+  }
+}
+
+.icon {
+  display: grid;
+  place-items: center;
+  grid-column: 2;
+  grid-row: 1;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-sm);
+  background: var(--tone-soft);
+  color: var(--tone);
+}
+
+.label {
+  grid-column: 1;
+  grid-row: 1;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--color-text-2);
+}
+
+.value {
+  grid-column: 1 / -1;
+  margin-top: var(--space-2);
+  font-size: 1.75rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+
+  @include up(md) {
+    font-size: 2rem;
+  }
+}
+
+.detail {
+  grid-column: 1 / -1;
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+}

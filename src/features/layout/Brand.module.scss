@@ -1,0 +1,74 @@
+@use 'mixins' as *;
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3);
+  color: var(--color-text);
+}
+
+.mark {
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+}
+
+.markBg {
+  fill: var(--color-brand-800);
+}
+
+.markBox {
+  fill: none;
+  stroke: #fff;
+  stroke-width: 1.8;
+  stroke-linejoin: round;
+}
+
+.markLines {
+  stroke: rgb(255 255 255 / 0.55);
+  stroke-width: 1.4;
+}
+
+.markAccent {
+  stroke: var(--color-accent);
+  stroke-width: 2.4;
+  stroke-linecap: round;
+}
+
+.text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.15;
+}
+
+.name {
+  font-size: 0.9375rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.tagline {
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+.inverse {
+  color: #fff;
+
+  .markBg {
+    fill: rgb(255 255 255 / 0.1);
+  }
+
+  .tagline {
+    color: rgb(255 255 255 / 0.55);
+  }
+}
+
+.compact .tagline {
+  @include down(sm) {
+    display: none;
+  }
+}

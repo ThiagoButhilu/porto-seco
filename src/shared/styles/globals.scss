@@ -1,0 +1,137 @@
+@use 'mixins' as *;
+
+:root {
+  /* Superfícies */
+  --color-bg: #f3f2ee;
+  --color-surface: #ffffff;
+  --color-surface-2: #f8f7f4;
+  --color-border: #e2e0d9;
+  --color-border-strong: #c9c6bc;
+
+  /* Texto */
+  --color-text: #15191f;
+  --color-text-2: #4b5262;
+  --color-text-muted: #6f7582;
+  --color-text-inverse: #ffffff;
+
+  /* Marca: azul-marinho institucional + âmbar de sinalização (cargas) */
+  --color-brand-950: #08172a;
+  --color-brand-900: #0c2138;
+  --color-brand-800: #112d4b;
+  --color-brand-700: #17406a;
+  --color-brand-600: #1f5289;
+  --color-brand-100: #e5ecf5;
+  --color-brand-50: #f1f5fa;
+  --color-accent: #f0a41a;
+  --color-accent-strong: #b87700;
+  --color-accent-soft: #fdf3de;
+  --color-focus: #2a78d6;
+
+  /* Status (reservados — sempre acompanhados de ícone + rótulo) */
+  --color-success: #17784a;
+  --color-success-soft: #e2f3e9;
+  --color-danger: #bf342d;
+  --color-danger-soft: #fbe8e6;
+  --color-warning: #94600a;
+  --color-warning-soft: #fcf0d8;
+  --color-info: #1f5fae;
+  --color-info-soft: #e6eef9;
+
+  /* Séries categóricas (ordem fixa, validada para daltonismo) */
+  --series-maritimo: #2a78d6;
+  --series-rodoviario: #eb6834;
+  --series-aereo: #1baf7a;
+
+  /* Espaçamento — escala de 4px */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-7: 32px;
+  --space-8: 48px;
+
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-full: 999px;
+
+  --shadow-sm: 0 1px 2px rgb(16 24 40 / 0.05);
+  --shadow-md: 0 4px 12px -2px rgb(16 24 40 / 0.08), 0 2px 4px -2px rgb(16 24 40 / 0.05);
+  --shadow-lg: 0 16px 40px -8px rgb(16 24 40 / 0.18), 0 4px 10px -4px rgb(16 24 40 / 0.08);
+
+  --font-sans: var(--font-plex-sans), system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-mono: var(--font-plex-mono), ui-monospace, 'SFMono-Regular', Menlo, monospace;
+
+  --sidebar-width: 248px;
+  --topbar-height: 64px;
+  --control-height: 42px;
+
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  min-height: 100dvh;
+  font-family: var(--font-sans);
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  color: var(--color-text);
+  background: var(--color-bg);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3,
+h4,
+p {
+  margin: 0;
+}
+
+h1,
+h2,
+h3 {
+  line-height: 1.25;
+  letter-spacing: -0.015em;
+}
+
+a {
+  color: inherit;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+
+:focus-visible {
+  @include focus-ring;
+}
+
+::selection {
+  background: var(--color-accent-soft);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

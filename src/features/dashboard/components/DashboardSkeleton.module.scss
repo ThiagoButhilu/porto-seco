@@ -1,0 +1,32 @@
+@use 'mixins' as *;
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+.tiles {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-3);
+
+  @include up(lg) {
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--space-4);
+  }
+}
+
+.modais {
+  display: grid;
+  gap: var(--space-3);
+
+  @include up(md) {
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-4);
+  }
+}
+
+.gap {
+  margin-top: var(--space-3);
+}
