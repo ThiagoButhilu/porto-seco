@@ -1,40 +1,40 @@
 /**
- * Contratos (ports) consumidos pela aplicação. A UI e os casos de uso dependem
- * apenas destas interfaces — a implementação concreta (HTTP, mock, etc.) é
- * injetada em `infra/container.ts`.
+ * Contracts (ports) consumed by the application. The UI and use cases depend
+ * only on these interfaces — the concrete implementation (HTTP, mock, etc.) is
+ * injected in `infra/container.ts`.
  */
 import type {
-  Comissaria,
-  DocumentoAverbado,
+  CustomsBroker,
+  DashboardStats,
   Dta,
-  IndicadoresDashboard,
-  NovaAverbacao,
-  StatusAverbacao,
-  Usuario,
+  EndorsedDocument,
+  EndorsementStatus,
+  NewEndorsement,
+  User,
 } from './entities';
 
 export interface AuthRepository {
-  login(email: string, senha: string): Promise<{ usuario: Usuario; token: string }>;
+  login(email: string, password: string): Promise<{ user: User; token: string }>;
 }
 
 export interface DtaRepository {
-  buscarPorNumero(numero: string): Promise<Dta>;
+  findByNumber(number: string): Promise<Dta>;
 }
 
-export interface ComissariaRepository {
-  listar(): Promise<Comissaria[]>;
+export interface CustomsBrokerRepository {
+  list(): Promise<CustomsBroker[]>;
 }
 
-export interface AverbacaoRepository {
-  enviar(dados: NovaAverbacao): Promise<StatusAverbacao>;
-  consultarStatus(id: string): Promise<StatusAverbacao>;
+export interface EndorsementRepository {
+  submit(data: NewEndorsement): Promise<EndorsementStatus>;
+  getStatus(id: string): Promise<EndorsementStatus>;
 }
 
-export interface DocumentoRepository {
-  pesquisar(termo: string): Promise<DocumentoAverbado[]>;
-  baixarArquivo(arquivoId: string): Promise<Blob>;
+export interface DocumentRepository {
+  search(term: string): Promise<EndorsedDocument[]>;
+  downloadFile(fileId: string): Promise<Blob>;
 }
 
 export interface DashboardRepository {
-  obterIndicadores(): Promise<IndicadoresDashboard>;
+  getStats(): Promise<DashboardStats>;
 }

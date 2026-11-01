@@ -12,7 +12,7 @@ interface FileDropzoneProps extends FieldBaseProps {
   onChange: (file: File | null) => void;
   onBlur?: () => void;
   accept: string;
-  /** Rótulo curto exibido no ícone do arquivo (ex.: PDF, XML). */
+  /** Short label shown on the file icon (e.g. PDF, XML). */
   fileTag: string;
   disabled?: boolean;
 }

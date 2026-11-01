@@ -14,7 +14,7 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   icon?: IconName;
   iconPosition?: 'start' | 'end';
   fullWidth?: boolean;
-  /** Botão apenas com ícone — exige `aria-label`. */
+  /** Icon-only button — requires `aria-label`. */
   iconOnly?: boolean;
 }
 

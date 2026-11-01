@@ -2,24 +2,24 @@
 
 import Link from 'next/link';
 import { Alert, Button, Card, CardHeader, EmptyState, PageHeader } from '@/shared/ui';
-import { useIndicadores } from '../hooks/useIndicadores';
+import { useDashboardStats } from '../hooks/useDashboardStats';
 import { DashboardSkeleton } from './DashboardSkeleton';
-import { ModalCards } from './ModalCards';
-import { RecentesList } from './RecentesList';
+import { ProcessTypeSplit } from './ProcessTypeSplit';
+import { RecentList } from './RecentList';
 import { StatTiles } from './StatTiles';
-import { TipoProcessoSplit } from './TipoProcessoSplit';
+import { TransportModeCards } from './TransportModeCards';
 import { WeeklyChart } from './WeeklyChart';
 import styles from './Dashboard.module.scss';
 
 export function Dashboard() {
-  const { data, isPending, isError, error, refetch, isRefetching } = useIndicadores();
+  const { data, isPending, isError, error, refetch, isRefetching } = useDashboardStats();
 
   const header = (
     <PageHeader
       title="Visão geral"
       description="Indicadores dos documentos enviados para averbação no recinto."
       actions={
-        <Link href="/averbacao" className={styles.cta}>
+        <Link href="/endorsements" className={styles.cta}>
           Nova averbação
         </Link>
       }
@@ -64,7 +64,7 @@ export function Dashboard() {
             title="Nenhum documento enviado ainda"
             description="Assim que as primeiras averbações forem enviadas, os indicadores aparecem aqui."
             action={
-              <Link href="/averbacao" className={styles.cta}>
+              <Link href="/endorsements" className={styles.cta}>
                 Fazer primeira averbação
               </Link>
             }
@@ -78,38 +78,38 @@ export function Dashboard() {
     <>
       {header}
       <div className={styles.grid}>
-        <StatTiles indicadores={data} />
+        <StatTiles stats={data} />
 
-        <section className={styles.section} aria-labelledby="modais-titulo">
-          <h2 id="modais-titulo" className={styles.sectionTitle}>
+        <section className={styles.section} aria-labelledby="transport-modes-title">
+          <h2 id="transport-modes-title" className={styles.sectionTitle}>
             Documentos por modalidade
           </h2>
-          <ModalCards porModal={data.porModal} total={data.total} />
+          <TransportModeCards byTransportMode={data.byTransportMode} total={data.total} />
         </section>
 
         <div className={styles.charts}>
           <Card>
             <CardHeader title="Envios nos últimos 7 dias" description="Total de averbações enviadas por dia" />
-            <WeeklyChart dias={data.ultimosDias} />
+            <WeeklyChart days={data.lastDays} />
           </Card>
           <Card>
             <CardHeader title="Tipo de processo" description="Distribuição entre DUIMP e DI" />
-            <TipoProcessoSplit porTipo={data.porTipo} />
+            <ProcessTypeSplit byProcessType={data.byProcessType} />
           </Card>
         </div>
 
         <Card padding="none">
-          <div className={styles.recentesHeader}>
+          <div className={styles.recentHeader}>
             <CardHeader
               title="Últimos envios"
               actions={
-                <Link href="/documentos" className={styles.link}>
+                <Link href="/documents" className={styles.link}>
                   Ver todos
                 </Link>
               }
             />
           </div>
-          <RecentesList documentos={data.recentes} />
+          <RecentList documents={data.recent} />
         </Card>
       </div>
     </>

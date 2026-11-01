@@ -4,67 +4,72 @@ import clsx from 'clsx';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useState, type ReactNode } from 'react';
+import type { UserRole } from '@/domain/entities';
 import { useSessionStore } from '@/features/auth/sessionStore';
-import { EnviosDrawer } from '@/features/averbacao/components/EnviosDrawer';
-import { useEnviosNotificacoes } from '@/features/averbacao/hooks/useEnviosNotificacoes';
-import { useEnviosAtivos } from '@/features/averbacao/store/enviosStore';
+import { SubmissionsDrawer } from '@/features/endorsement/components/SubmissionsDrawer';
+import { useSubmissionNotifications } from '@/features/endorsement/hooks/useSubmissionNotifications';
+import { useActiveSubmissions } from '@/features/endorsement/store/submissionsStore';
 import { Button, Icon, type IconName } from '@/shared/ui';
 import { Brand } from './Brand';
 import styles from './AppShell.module.scss';
 
 const NAV: { href: string; label: string; icon: IconName }[] = [
   { href: '/dashboard', label: 'Dashboard', icon: 'dashboard' },
-  { href: '/averbacao', label: 'Averbação', icon: 'fileUp' },
-  { href: '/documentos', label: 'Consulta de documentos', icon: 'search' },
+  { href: '/endorsements', label: 'Averbação', icon: 'fileUp' },
+  { href: '/documents', label: 'Consulta de documentos', icon: 'search' },
 ];
 
-const PERFIL_LABEL = { OPERADOR: 'Operador', DESPACHANTE: 'Despachante', ADMINISTRADOR: 'Administrador' };
+const ROLE_LABEL: Record<UserRole, string> = {
+  OPERATOR: 'Operador',
+  BROKER: 'Despachante',
+  ADMIN: 'Administrador',
+};
 
 export function AppShell({ children }: { children: ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
-  const usuario = useSessionStore((state) => state.usuario);
-  const sair = useSessionStore((state) => state.sair);
-  const ativos = useEnviosAtivos();
-  const [menuAberto, setMenuAberto] = useState(false);
-  const [enviosAbertos, setEnviosAbertos] = useState(false);
+  const user = useSessionStore((state) => state.user);
+  const signOut = useSessionStore((state) => state.signOut);
+  const activeCount = useActiveSubmissions();
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [submissionsOpen, setSubmissionsOpen] = useState(false);
 
-  useEnviosNotificacoes();
+  useSubmissionNotifications();
 
-  useEffect(() => setMenuAberto(false), [pathname]);
+  useEffect(() => setMenuOpen(false), [pathname]);
 
-  const handleSair = () => {
-    sair();
+  const handleSignOut = () => {
+    signOut();
     router.replace('/login');
   };
 
-  const iniciais = (usuario?.nome ?? '?')
+  const initials = (user?.name ?? '?')
     .split(' ')
-    .map((p) => p[0])
+    .map((part) => part[0])
     .slice(0, 2)
     .join('')
     .toUpperCase();
 
   return (
     <div className={styles.shell}>
-      <a href="#conteudo" className={styles.skipLink}>
+      <a href="#content" className={styles.skipLink}>
         Pular para o conteúdo
       </a>
 
-      <aside className={clsx(styles.sidebar, menuAberto && styles.sidebarOpen)} aria-label="Menu principal">
+      <aside className={clsx(styles.sidebar, menuOpen && styles.sidebarOpen)} aria-label="Menu principal">
         <div className={styles.sidebarHeader}>
           <Brand inverse />
         </div>
         <nav className={styles.nav}>
           <span className={styles.navLabel}>Módulo de documentos</span>
           {NAV.map((item) => {
-            const ativo = pathname.startsWith(item.href);
+            const active = pathname.startsWith(item.href);
             return (
               <Link
                 key={item.href}
                 href={item.href}
-                className={clsx(styles.navItem, ativo && styles.navItemActive)}
-                aria-current={ativo ? 'page' : undefined}
+                className={clsx(styles.navItem, active && styles.navItemActive)}
+                aria-current={active ? 'page' : undefined}
               >
                 <Icon name={item.icon} size={18} />
                 {item.label}
@@ -74,19 +79,19 @@ export function AppShell({ children }: { children: ReactNode }) {
         </nav>
         <div className={styles.sidebarFooter}>
           <span className={styles.avatar} aria-hidden>
-            {iniciais}
+            {initials}
           </span>
           <div className={styles.userInfo}>
-            <span className={styles.userName}>{usuario?.nome}</span>
-            <span className={styles.userRole}>{usuario && PERFIL_LABEL[usuario.perfil]}</span>
+            <span className={styles.userName}>{user?.name}</span>
+            <span className={styles.userRole}>{user && ROLE_LABEL[user.role]}</span>
           </div>
-          <button type="button" className={styles.logout} onClick={handleSair} aria-label="Sair">
+          <button type="button" className={styles.logout} onClick={handleSignOut} aria-label="Sair">
             <Icon name="logout" size={18} />
           </button>
         </div>
       </aside>
 
-      {menuAberto && <div className={styles.overlay} onClick={() => setMenuAberto(false)} aria-hidden />}
+      {menuOpen && <div className={styles.overlay} onClick={() => setMenuOpen(false)} aria-hidden />}
 
       <div className={styles.main}>
         <header className={styles.topbar}>
@@ -96,8 +101,8 @@ export function AppShell({ children }: { children: ReactNode }) {
               icon="menu"
               iconOnly
               aria-label="Abrir menu"
-              aria-expanded={menuAberto}
-              onClick={() => setMenuAberto(true)}
+              aria-expanded={menuOpen}
+              onClick={() => setMenuOpen(true)}
             />
           </span>
           <div className={styles.mobileBrand}>
@@ -106,27 +111,27 @@ export function AppShell({ children }: { children: ReactNode }) {
           <div className={styles.topbarActions}>
             <button
               type="button"
-              className={clsx(styles.enviosButton, ativos > 0 && styles.enviosButtonActive)}
-              onClick={() => setEnviosAbertos(true)}
+              className={clsx(styles.submissionsButton, activeCount > 0 && styles.submissionsButtonActive)}
+              onClick={() => setSubmissionsOpen(true)}
               aria-haspopup="dialog"
             >
               <Icon name="layers" size={18} />
-              <span className={styles.enviosLabel}>Envios</span>
-              {ativos > 0 && (
-                <span className={styles.enviosCount} aria-label={`${ativos} em andamento`}>
-                  {ativos}
+              <span className={styles.submissionsLabel}>Envios</span>
+              {activeCount > 0 && (
+                <span className={styles.submissionsCount} aria-label={`${activeCount} em andamento`}>
+                  {activeCount}
                 </span>
               )}
             </button>
           </div>
         </header>
 
-        <main id="conteudo" className={styles.content}>
+        <main id="content" className={styles.content}>
           {children}
         </main>
       </div>
 
-      <EnviosDrawer open={enviosAbertos} onClose={() => setEnviosAbertos(false)} />
+      <SubmissionsDrawer open={submissionsOpen} onClose={() => setSubmissionsOpen(false)} />
     </div>
   );
 }

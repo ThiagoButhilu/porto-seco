@@ -1,101 +1,98 @@
-import type { Modal } from './modal';
+import type { TransportMode } from './transportMode';
 
-export * from './modal';
+export * from './transportMode';
 
-export type Perfil = 'OPERADOR' | 'DESPACHANTE' | 'ADMINISTRADOR';
+export type UserRole = 'OPERATOR' | 'BROKER' | 'ADMIN';
 
-export interface Usuario {
+export interface User {
   id: string;
-  nome: string;
+  name: string;
   email: string;
-  perfil: Perfil;
+  role: UserRole;
 }
 
-export interface Importador {
-  razaoSocial: string;
+export interface Importer {
+  companyName: string;
   cnpj: string;
-  dataCadastro: string; // ISO
+  registeredAt: string; // ISO
 }
 
-/** Declaração de Trânsito Aduaneiro — a carga que chegou ao recinto. */
+/** DTA (Declaração de Trânsito Aduaneiro) — the cargo that arrived at the bonded facility. */
 export interface Dta {
-  numero: string; // 25/0000000-1
-  importador: Importador;
-  paisOrigem: string;
-  modal: Modal;
-  numeroConhecimento: string;
+  number: string; // 25/0000000-1
+  importer: Importer;
+  originCountry: string;
+  transportMode: TransportMode;
+  billOfLadingNumber: string;
 }
 
-export interface Comissaria {
+/** Customs broker ("comissária") responsible for the clearance. */
+export interface CustomsBroker {
   id: string;
-  nome: string;
+  name: string;
   cnpj: string;
 }
 
-export type TipoProcesso = 'DUIMP' | 'DI';
+export type ProcessType = 'DUIMP' | 'DI';
 
-export type StatusProcessamento = 'PROCESSANDO' | 'CONCLUIDO' | 'ERRO';
+export type ProcessingStatus = 'PROCESSING' | 'COMPLETED' | 'FAILED';
 
-export type TipoArquivo = 'PDF' | 'XML';
+export type FileType = 'PDF' | 'XML';
 
-export interface ArquivoEnviado {
+export interface UploadedFile {
   id: string;
-  nome: string;
-  tipo: TipoArquivo;
-  tamanho: number; // bytes
+  name: string;
+  type: FileType;
+  size: number; // bytes
 }
 
-/** Documento averbado: vínculo entre a DTA e a declaração de importação (DI/DUIMP). */
-export interface DocumentoAverbado {
+/** Endorsed document ("averbação"): links the DTA to the import declaration (DI/DUIMP). */
+export interface EndorsedDocument {
   id: string;
   dta: string;
-  tipoProcesso: TipoProcesso;
-  numeroDocumento: string;
-  importador: string;
-  paisOrigem: string;
-  modal: Modal;
-  numeroConhecimento: string;
-  comissaria: string;
-  codigoReferencia?: string;
-  coberturaCambial: boolean;
-  enviadoEm: string; // ISO
-  status: StatusProcessamento;
-  mensagemErro?: string;
-  arquivos: ArquivoEnviado[];
+  processType: ProcessType;
+  documentNumber: string;
+  importer: string;
+  originCountry: string;
+  transportMode: TransportMode;
+  billOfLadingNumber: string;
+  customsBroker: string;
+  referenceCode?: string;
+  foreignExchangeCoverage: boolean;
+  submittedAt: string; // ISO
+  status: ProcessingStatus;
+  errorMessage?: string;
+  files: UploadedFile[];
 }
 
-interface NovaAverbacaoBase {
+interface NewEndorsementBase {
   dta: string;
-  comissariaId: string;
-  codigoReferencia?: string;
-  coberturaCambial: boolean;
+  customsBrokerId: string;
+  referenceCode?: string;
+  foreignExchangeCoverage: boolean;
   pdf: File;
 }
 
-export type NovaAverbacao =
-  | (NovaAverbacaoBase & { tipoProcesso: 'DUIMP'; numeroDuimp: string; chaveAcesso: string })
-  | (NovaAverbacaoBase & { tipoProcesso: 'DI'; numeroDi: string; xml: File });
+export type NewEndorsement =
+  | (NewEndorsementBase & { processType: 'DUIMP'; duimpNumber: string; accessKey: string })
+  | (NewEndorsementBase & { processType: 'DI'; diNumber: string; xml: File });
 
-export interface StatusAverbacao {
+export interface EndorsementStatus {
   id: string;
-  status: StatusProcessamento;
-  mensagemErro?: string;
+  status: ProcessingStatus;
+  errorMessage?: string;
 }
 
-export interface IndicadorModal {
+export interface StatusBreakdown {
   total: number;
-  concluidos: number;
-  processando: number;
-  erros: number;
+  completed: number;
+  processing: number;
+  failed: number;
 }
 
-export interface IndicadoresDashboard {
-  total: number;
-  concluidos: number;
-  processando: number;
-  erros: number;
-  porModal: Record<Modal, IndicadorModal>;
-  porTipo: Record<TipoProcesso, number>;
-  ultimosDias: { data: string; total: number }[];
-  recentes: DocumentoAverbado[];
+export interface DashboardStats extends StatusBreakdown {
+  byTransportMode: Record<TransportMode, StatusBreakdown>;
+  byProcessType: Record<ProcessType, number>;
+  lastDays: { date: string; total: number }[];
+  recent: EndorsedDocument[];
 }

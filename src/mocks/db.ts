@@ -1,69 +1,69 @@
-import type { DocumentoAverbado, StatusProcessamento } from '@/domain/entities';
-import { gerarDocumentosIniciais } from './data/seed';
+import type { EndorsedDocument, ProcessingStatus } from '@/domain/entities';
+import { generateInitialDocuments } from './data/seed';
 
-/** Registro interno: o resultado do processamento é sorteado no envio e revelado em `processarEm`. */
-export interface Registro extends DocumentoAverbado {
-  processarEm?: number;
-  resultado?: { status: StatusProcessamento; mensagemErro?: string };
+/** Internal record: the processing outcome is drawn on submit and revealed at `processAt`. */
+export interface DocumentRecord extends EndorsedDocument {
+  processAt?: number;
+  outcome?: { status: ProcessingStatus; errorMessage?: string };
 }
 
-const STORAGE_KEY = 'porto-seco:mock-db:v1';
+const STORAGE_KEY = 'porto-seco:mock-db:v2';
 
-function load(): Registro[] {
+function load(): DocumentRecord[] {
   try {
     const saved = localStorage.getItem(STORAGE_KEY);
-    if (saved) return JSON.parse(saved) as Registro[];
+    if (saved) return JSON.parse(saved) as DocumentRecord[];
   } catch {
-    /* storage indisponível: segue com a massa inicial */
+    /* storage unavailable: fall back to the seed data */
   }
-  return gerarDocumentosIniciais();
+  return generateInitialDocuments();
 }
 
-let registros: Registro[] | null = null;
+let records: DocumentRecord[] | null = null;
 
-function all(): Registro[] {
-  registros ??= load();
-  return registros;
+function all(): DocumentRecord[] {
+  records ??= load();
+  return records;
 }
 
 function persist() {
   try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(registros));
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(records));
   } catch {
-    /* sem persistência — os dados ficam apenas em memória */
+    /* no persistence — data lives in memory only */
   }
 }
 
-/** Aplica o resultado do processamento quando o tempo simulado já passou. */
-function resolverStatus(registro: Registro): Registro {
-  if (registro.status === 'PROCESSANDO' && registro.processarEm && Date.now() >= registro.processarEm) {
-    registro.status = registro.resultado?.status ?? 'CONCLUIDO';
-    registro.mensagemErro = registro.resultado?.mensagemErro;
+/** Applies the processing outcome once the simulated time has elapsed. */
+function resolveStatus(record: DocumentRecord): DocumentRecord {
+  if (record.status === 'PROCESSING' && record.processAt && Date.now() >= record.processAt) {
+    record.status = record.outcome?.status ?? 'COMPLETED';
+    record.errorMessage = record.outcome?.errorMessage;
     persist();
   }
-  return registro;
+  return record;
 }
 
-function semCamposInternos({ processarEm: _p, resultado: _r, ...documento }: Registro): DocumentoAverbado {
-  return documento;
+function withoutInternalFields({ processAt: _p, outcome: _o, ...document }: DocumentRecord): EndorsedDocument {
+  return document;
 }
 
 export const db = {
-  listar(): DocumentoAverbado[] {
-    return all().map(resolverStatus).map(semCamposInternos);
+  list(): EndorsedDocument[] {
+    return all().map(resolveStatus).map(withoutInternalFields);
   },
-  obter(id: string): Registro | undefined {
-    const registro = all().find((r) => r.id === id);
-    return registro && resolverStatus(registro);
+  get(id: string): DocumentRecord | undefined {
+    const record = all().find((r) => r.id === id);
+    return record && resolveStatus(record);
   },
-  inserir(registro: Registro) {
-    all().unshift(registro);
+  insert(record: DocumentRecord) {
+    all().unshift(record);
     persist();
   },
-  encontrarArquivo(arquivoId: string) {
-    for (const registro of all()) {
-      const arquivo = registro.arquivos.find((a) => a.id === arquivoId);
-      if (arquivo) return { arquivo, documento: semCamposInternos(registro) };
+  findFile(fileId: string) {
+    for (const record of all()) {
+      const file = record.files.find((f) => f.id === fileId);
+      if (file) return { file, document: withoutInternalFields(record) };
     }
     return undefined;
   },

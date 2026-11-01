@@ -1,20 +1,20 @@
-import type { StatusProcessamento } from '@/domain/entities';
+import type { ProcessingStatus } from '@/domain/entities';
 import { Badge, Icon, Spinner, type BadgeTone } from '@/shared/ui';
 
-const CONFIG: Record<StatusProcessamento, { label: string; tone: BadgeTone }> = {
-  PROCESSANDO: { label: 'Processando', tone: 'info' },
-  CONCLUIDO: { label: 'Concluído', tone: 'success' },
-  ERRO: { label: 'Erro', tone: 'danger' },
+const CONFIG: Record<ProcessingStatus, { label: string; tone: BadgeTone }> = {
+  PROCESSING: { label: 'Processando', tone: 'info' },
+  COMPLETED: { label: 'Concluído', tone: 'success' },
+  FAILED: { label: 'Erro', tone: 'danger' },
 };
 
-/** Status sempre com ícone + texto, nunca apenas cor. */
-export function StatusBadge({ status }: { status: StatusProcessamento }) {
+/** Status always shown with icon + text, never color alone. */
+export function StatusBadge({ status }: { status: ProcessingStatus }) {
   const { label, tone } = CONFIG[status];
   const icon =
-    status === 'PROCESSANDO' ? (
+    status === 'PROCESSING' ? (
       <Spinner size={11} />
     ) : (
-      <Icon name={status === 'CONCLUIDO' ? 'check' : 'alert'} size={13} />
+      <Icon name={status === 'COMPLETED' ? 'check' : 'alert'} size={13} />
     );
 
   return (

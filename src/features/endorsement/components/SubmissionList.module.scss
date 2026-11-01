@@ -1,0 +1,204 @@
+@use 'mixins' as *;
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  min-height: 32px;
+  font-size: 0.8125rem;
+  color: var(--color-text-2);
+
+  strong {
+    color: var(--color-text);
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.item {
+  --status-color: var(--color-info);
+  --status-soft: var(--color-info-soft);
+
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-left: 3px solid var(--status-color);
+  border-radius: var(--radius-md);
+  animation: appear 0.3s var(--ease-out);
+}
+
+.completed {
+  --status-color: var(--color-success);
+  --status-soft: var(--color-success-soft);
+}
+
+.failed {
+  --status-color: var(--color-danger);
+  --status-soft: var(--color-danger-soft);
+}
+
+.head {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+}
+
+.statusIcon {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--status-soft);
+  color: var(--status-color);
+}
+
+.headText {
+  flex: 1;
+  min-width: 0;
+}
+
+.doc {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.processType {
+  padding: 1px 6px;
+  border-radius: 4px;
+  background: var(--color-brand-100);
+  color: var(--color-brand-700);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+}
+
+.mono {
+  @include mono;
+}
+
+.meta {
+  overflow: hidden;
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.time {
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.steps {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 4px;
+  margin: var(--space-3) 0 var(--space-2);
+  padding: 0;
+  list-style: none;
+}
+
+.step {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.stepBar {
+  position: relative;
+  overflow: hidden;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--color-border);
+}
+
+.stepLabel {
+  font-size: 0.6875rem;
+  color: var(--color-text-muted);
+}
+
+.done .stepBar {
+  background: var(--status-color);
+}
+
+.current {
+  .stepBar::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    width: 40%;
+    border-radius: 2px;
+    background: var(--status-color);
+    animation: indeterminate 1.2s ease-in-out infinite;
+  }
+
+  .stepLabel {
+    color: var(--color-text);
+    font-weight: 600;
+  }
+}
+
+.stepFailed {
+  .stepBar {
+    background: var(--color-danger);
+  }
+
+  .stepLabel {
+    color: var(--color-danger);
+    font-weight: 600;
+  }
+}
+
+.statusText {
+  font-size: 0.75rem;
+  color: var(--color-text-2);
+
+  strong {
+    color: var(--status-color);
+    font-weight: 600;
+  }
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-top: var(--space-3);
+}
+
+@keyframes indeterminate {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(250%);
+  }
+}
+
+@keyframes appear {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+}

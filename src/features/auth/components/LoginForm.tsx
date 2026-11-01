@@ -3,13 +3,13 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { LIMITES, loginSchema, type LoginInput } from '@/domain/validation/schemas';
+import { LIMITS, loginSchema, type LoginInput } from '@/domain/validation/schemas';
 import { Alert, Button, TextField } from '@/shared/ui';
 import { useLogin } from '../hooks/useLogin';
 import styles from './LoginForm.module.scss';
 
 export function LoginForm() {
-  const [mostrarSenha, setMostrarSenha] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const login = useLogin();
   const {
     register,
@@ -18,11 +18,11 @@ export function LoginForm() {
   } = useForm<LoginInput>({
     resolver: zodResolver(loginSchema),
     mode: 'onTouched',
-    defaultValues: { email: '', senha: '' },
+    defaultValues: { email: '', password: '' },
   });
 
   return (
-    <form className={styles.form} onSubmit={handleSubmit((dados) => login.mutate(dados))} noValidate>
+    <form className={styles.form} onSubmit={handleSubmit((data) => login.mutate(data))} noValidate>
       {login.isError && (
         <Alert tone="danger" title="Não foi possível entrar">
           {login.error.message}
@@ -36,7 +36,7 @@ export function LoginForm() {
         placeholder="nome@empresa.com.br"
         autoComplete="email"
         inputMode="email"
-        maxLength={LIMITES.EMAIL}
+        maxLength={LIMITS.EMAIL}
         required
         error={errors.email?.message}
         {...register('email')}
@@ -44,25 +44,25 @@ export function LoginForm() {
 
       <TextField
         label="Senha"
-        type={mostrarSenha ? 'text' : 'password'}
+        type={showPassword ? 'text' : 'password'}
         icon="lock"
         placeholder="Mínimo de 6 caracteres"
         autoComplete="current-password"
-        maxLength={LIMITES.SENHA_MAX}
+        maxLength={LIMITS.PASSWORD_MAX}
         showCounter
         required
-        error={errors.senha?.message}
+        error={errors.password?.message}
         endSlot={
           <button
             type="button"
             className={styles.toggle}
-            onClick={() => setMostrarSenha((v) => !v)}
-            aria-pressed={mostrarSenha}
+            onClick={() => setShowPassword((v) => !v)}
+            aria-pressed={showPassword}
           >
-            {mostrarSenha ? 'Ocultar' : 'Mostrar'}
+            {showPassword ? 'Ocultar' : 'Mostrar'}
           </button>
         }
-        {...register('senha')}
+        {...register('password')}
       />
 
       <Button type="submit" size="lg" fullWidth loading={login.isPending}>

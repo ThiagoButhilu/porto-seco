@@ -27,7 +27,7 @@ export const useToastStore = create<ToastState>((set, get) => ({
   dismiss: (id) => set({ toasts: get().toasts.filter((t) => t.id !== id) }),
 }));
 
-/** API imperativa para disparar toasts de qualquer lugar (inclusive fora do React). */
+/** Imperative API to fire toasts from anywhere (including outside React). */
 export const toast = {
   success: (title: string, description?: string) =>
     useToastStore.getState().push({ tone: 'success', title, description }),

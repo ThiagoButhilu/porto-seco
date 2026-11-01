@@ -1,6 +1,6 @@
 /**
- * Máscaras: `9` = dígito, `A` = letra (convertida para maiúscula),
- * qualquer outro caractere é literal.
+ * Masks: `9` = digit, `A` = letter (converted to uppercase),
+ * any other character is a literal.
  */
 export const MASKS = {
   DTA: '99/9999999-9',
@@ -14,13 +14,13 @@ export const PATTERNS = {
   DUIMP: /^\d{2}[A-Z]{2}\d{10}-\d$/,
 } as const;
 
-export const EXEMPLOS = {
+export const EXAMPLES = {
   DTA: '25/0000000-1',
   DI: '25/0000000-1',
   DUIMP: '26BR0000123456-7',
 } as const;
 
-/** Remove tudo que não for letra ou número. */
+/** Strips everything that is not a letter or a digit. */
 export function unmask(value: string): string {
   return value.replace(/[^0-9A-Za-z]/g, '').toUpperCase();
 }

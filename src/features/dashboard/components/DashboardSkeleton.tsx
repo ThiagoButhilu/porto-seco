@@ -13,7 +13,7 @@ export function DashboardSkeleton() {
           </Card>
         ))}
       </div>
-      <div className={styles.modais}>
+      <div className={styles.modes}>
         {Array.from({ length: 3 }, (_, i) => (
           <Card key={i} padding="md">
             <Skeleton width="45%" height={20} />

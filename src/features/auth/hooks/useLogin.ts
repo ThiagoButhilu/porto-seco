@@ -7,14 +7,14 @@ import { useSessionStore } from '../sessionStore';
 export function useLogin() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const entrar = useSessionStore((state) => state.entrar);
+  const signIn = useSessionStore((state) => state.signIn);
 
   return useMutation({
-    mutationFn: ({ email, senha }: LoginInput) => repositories.auth.login(email, senha),
-    onSuccess: ({ usuario, token }) => {
-      entrar(usuario, token);
+    mutationFn: ({ email, password }: LoginInput) => repositories.auth.login(email, password),
+    onSuccess: ({ user, token }) => {
+      signIn(user, token);
       const redirect = searchParams.get('redirect');
-      // Só aceita caminhos internos para evitar open redirect
+      // Only internal paths are accepted, to prevent open redirects
       router.replace(redirect?.startsWith('/') && !redirect.startsWith('//') ? redirect : '/dashboard');
     },
   });

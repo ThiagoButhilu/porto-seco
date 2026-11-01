@@ -1,6 +1,6 @@
 import type { SVGProps } from 'react';
 
-/** Ícones em traço (24×24, stroke 1.75) — inline para não depender de biblioteca. */
+/** Stroke icons (24×24, stroke 1.75) — inlined to avoid an icon library dependency. */
 const paths = {
   dashboard: (
     <>

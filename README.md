@@ -13,7 +13,7 @@ npm install
 npm run dev
 ```
 
-Acesse http://localhost:3000. Login: **qualquer e-mail válido e senha com 6+ caracteres**.
+Acesse http://localhost:3000 (rotas: `/login`, `/dashboard`, `/endorsements`, `/documents`). Login: **qualquer e-mail válido e senha com 6+ caracteres**.
 
 | Comando | O que faz |
 |---|---|
@@ -67,12 +67,12 @@ Clean Architecture aplicada ao frontend: as dependências apontam **para dentro*
 ```
 src/
 ├── domain/                 # Regras de negócio puras (sem React, sem fetch)
-│   ├── entities/           # Dta, DocumentoAverbado, NovaAverbacao, Modal...
+│   ├── entities/           # Dta, EndorsedDocument, NewEndorsement, TransportMode...
 │   ├── repositories.ts     # Contratos (ports) consumidos pela aplicação
 │   └── validation/         # Máscaras (DTA/DI/DUIMP) e schemas Zod
 │
 ├── application/            # Casos de uso
-│   └── averbacao/enviarAverbacao.ts   # POST → 202 → polling de status
+│   └── endorsement/submitEndorsement.ts   # POST → 202 → polling de status
 │
 ├── infra/                  # Detalhes de implementação
 │   ├── http/httpClient.ts  # fetch + ApiError + mensagens padrão
@@ -81,7 +81,7 @@ src/
 │   └── container.ts        # Composition root (injeção de dependências)
 │
 ├── features/               # Módulos de tela (componentes, hooks, stores)
-│   ├── auth/  dashboard/  averbacao/  documentos/  layout/
+│   ├── auth/  dashboard/  endorsement/  documents/  layout/
 │
 ├── shared/                 # Reutilizável e agnóstico de feature
 │   ├── ui/                 # Design system: Button, TextField, Select, FileDropzone, Modal...
@@ -95,9 +95,10 @@ src/
 ```
 
 **Regras que segui:**
+- **Código em inglês, interface em português.** Identificadores, comentários, rotas e contratos da API estão em inglês. Os textos exibidos ao usuário e as mensagens de erro ficam em português, porque o sistema é usado por operadores brasileiros. Termos do domínio aduaneiro sem tradução exata mantêm a sigla (DTA, DI, DUIMP) e aparecem explicados nos comentários: averbação = `endorsement`, comissária = `customs broker`, conhecimento = `bill of lading`.
 - `app/` só monta páginas; nenhuma regra de negócio mora em rotas.
-- As telas acessam dados por **hooks** (`useDocumentos`, `useDta`...). Os hooks chamam **repositórios** pelo `container`, e nenhum componente chama `fetch` direto.
-- O caso de uso `enviarAverbacao` não conhece React nem Zustand: recebe o repositório e um callback de progresso. Isso permite testá-lo isoladamente.
+- As telas acessam dados por **hooks** (`useDocuments`, `useDta`...). Os hooks chamam **repositórios** pelo `container`, e nenhum componente chama `fetch` direto.
+- O caso de uso `submitEndorsement` não conhece React nem Zustand: recebe o repositório e um callback de progresso. Isso permite testá-lo isoladamente.
 - Validações e máscaras ficam no domínio e são reutilizadas no formulário, na busca e no mock.
 
 ---
@@ -106,7 +107,7 @@ src/
 
 Requisitos: vários envios por expediente, um envio em andamento não bloqueia outro, falhas são isoladas, cada envio tem seu status.
 
-1. **Fila de envios no Zustand (`features/averbacao/store/enviosStore.ts`).** Cada envio é um item com `etapa` própria (`ENVIANDO → PROCESSANDO → CONCLUIDO | ERRO`). `iniciar()` dispara o caso de uso em *fire-and-forget* e retorna na hora, então não existe um "envio atual" que trave a tela.
+1. **Fila de envios no Zustand (`features/endorsement/store/submissionsStore.ts`).** Cada envio é um item com `stage` própria (`SENDING → PROCESSING → COMPLETED | FAILED`). `start()` dispara o caso de uso em *fire-and-forget* e retorna na hora, então não existe um "envio atual" que trave a tela.
 2. **Processamento assíncrono realista.** O POST devolve `202 Accepted` com um id, e o caso de uso faz *polling* do status. Isso imita backends reais de processamento de documentos, em que a validação na Receita não é instantânea.
 3. **Isolamento de falhas.** O caso de uso **nunca lança exceção**: qualquer erro (rede, 4xx/5xx, timeout, falhas seguidas no polling) vira a etapa `ERRO` daquele item. Um envio com problema não afeta os outros.
 4. **Tentar novamente sem redigitar.** O payload (inclusive os `File`s) fica em memória no item da fila, e o botão "Tentar novamente" reexecuta só aquele envio.
@@ -163,13 +164,13 @@ As máscaras (`domain/validation/masks.ts`) são um formatador genérico (`9` = 
 | Método | Rota | Descrição |
 |---|---|---|
 | POST | `/api/auth/login` | Autenticação simulada |
-| GET | `/api/dtas/:numero` | Consulta DTA (404 se não existir) |
-| GET | `/api/comissarias` | Lista de comissárias |
-| POST | `/api/averbacoes` | Upload multipart → `202 { id, status }` |
-| GET | `/api/averbacoes/:id/status` | Status do processamento |
-| GET | `/api/documentos?q=` | Busca por DTA/DI/DUIMP |
-| GET | `/api/arquivos/:id` | Conteúdo do arquivo (visualizar/baixar) |
-| GET | `/api/dashboard/indicadores` | Indicadores agregados |
+| GET | `/api/dtas/:number` | Consulta DTA (404 se não existir) |
+| GET | `/api/customs-brokers` | Lista de comissárias |
+| POST | `/api/endorsements` | Upload multipart → `202 { id, status }` |
+| GET | `/api/endorsements/:id/status` | Status do processamento |
+| GET | `/api/documents?q=` | Busca por DTA/DI/DUIMP |
+| GET | `/api/files/:id` | Conteúdo do arquivo (visualizar/baixar) |
+| GET | `/api/dashboard/stats` | Indicadores agregados |
 
 - Os metadados ficam no `localStorage` e os arquivos enviados no **IndexedDB**, então tudo sobrevive a um reload. Os documentos de exemplo geram PDF e XML válidos na hora.
 - Se o navegador não permitir Service Worker (aba anônima do Firefox, webviews, políticas corporativas), o mock passa a interceptar o `fetch` com os mesmos handlers.
@@ -179,7 +180,7 @@ As máscaras (`domain/validation/masks.ts`) são um formatador genérico (`9` = 
 
 ## Próximos passos
 
-- Testes unitários: máscaras, schemas e o caso de uso `enviarAverbacao` (que já é isolável). Testes E2E com Playwright para o fluxo de averbação.
+- Testes unitários: máscaras, schemas e o caso de uso `submitEndorsement` (que já é isolável). Testes E2E com Playwright para o fluxo de averbação.
 - Paginação e filtros (status, modal, período) na consulta.
 - Persistir a fila de envios para sobreviver a um reload. Hoje os `File`s ficam apenas em memória.
 - Permissões por perfil de usuário (operador, despachante, administrador).

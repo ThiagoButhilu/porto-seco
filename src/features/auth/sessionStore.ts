@@ -1,27 +1,27 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import type { Usuario } from '@/domain/entities';
+import type { User } from '@/domain/entities';
 import { sessionCookie } from '@/infra/session/sessionCookie';
 
 interface SessionState {
-  usuario: Usuario | null;
-  entrar: (usuario: Usuario, token: string) => void;
-  sair: () => void;
+  user: User | null;
+  signIn: (user: User, token: string) => void;
+  signOut: () => void;
 }
 
 export const useSessionStore = create<SessionState>()(
   persist(
     (set) => ({
-      usuario: null,
-      entrar: (usuario, token) => {
+      user: null,
+      signIn: (user, token) => {
         sessionCookie.set(token);
-        set({ usuario });
+        set({ user });
       },
-      sair: () => {
+      signOut: () => {
         sessionCookie.clear();
-        set({ usuario: null });
+        set({ user: null });
       },
     }),
-    { name: 'porto-seco:sessao' },
+    { name: 'porto-seco:session' },
   ),
 );

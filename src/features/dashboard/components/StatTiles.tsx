@@ -1,4 +1,4 @@
-import type { IndicadoresDashboard } from '@/domain/entities';
+import type { DashboardStats } from '@/domain/entities';
 import { formatNumber, formatPercent } from '@/shared/lib/format';
 import { Icon, type IconName } from '@/shared/ui';
 import styles from './StatTiles.module.scss';
@@ -11,13 +11,13 @@ interface Tile {
   detail?: string;
 }
 
-export function StatTiles({ indicadores }: { indicadores: IndicadoresDashboard }) {
-  const { total, concluidos, processando, erros } = indicadores;
+export function StatTiles({ stats }: { stats: DashboardStats }) {
+  const { total, completed, processing, failed } = stats;
   const tiles: Tile[] = [
     { label: 'Total enviados', value: total, icon: 'layers', tone: 'brand', detail: 'Todas as averbações' },
-    { label: 'Concluídos', value: concluidos, icon: 'checkCircle', tone: 'success', detail: `${formatPercent(concluidos, total)} do total` },
-    { label: 'Em processamento', value: processando, icon: 'clock', tone: 'info', detail: processando ? 'Atualizando automaticamente' : 'Nenhum na fila' },
-    { label: 'Com erro', value: erros, icon: 'alert', tone: 'danger', detail: `${formatPercent(erros, total)} do total` },
+    { label: 'Concluídos', value: completed, icon: 'checkCircle', tone: 'success', detail: `${formatPercent(completed, total)} do total` },
+    { label: 'Em processamento', value: processing, icon: 'clock', tone: 'info', detail: processing ? 'Atualizando automaticamente' : 'Nenhum na fila' },
+    { label: 'Com erro', value: failed, icon: 'alert', tone: 'danger', detail: `${formatPercent(failed, total)} do total` },
   ];
 
   return (

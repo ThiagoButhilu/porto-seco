@@ -16,7 +16,7 @@ interface ModalProps {
   children: ReactNode;
 }
 
-/** Usa `<dialog>` nativo: foco preso, ESC e backdrop acessíveis sem biblioteca. */
+/** Uses the native `<dialog>`: focus trap, ESC and backdrop for free, no library needed. */
 export function Modal({
   open,
   onClose,

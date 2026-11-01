@@ -3,55 +3,55 @@ import { formatDate, formatWeekday } from '@/shared/lib/format';
 import styles from './WeeklyChart.module.scss';
 
 interface WeeklyChartProps {
-  dias: { data: string; total: number }[];
+  days: { date: string; total: number }[];
 }
 
-/** Arredonda o topo da escala para um valor "redondo" (múltiplo de 2/5/10). */
-function escalaMaxima(valor: number) {
-  if (valor <= 4) return 4;
-  const passo = valor <= 10 ? 2 : valor <= 25 ? 5 : 10;
-  return Math.ceil(valor / passo) * passo;
+/** Rounds the top of the scale to a "nice" value (multiple of 2/5/10). */
+function scaleMax(value: number) {
+  if (value <= 4) return 4;
+  const step = value <= 10 ? 2 : value <= 25 ? 5 : 10;
+  return Math.ceil(value / step) * step;
 }
 
-export function WeeklyChart({ dias }: WeeklyChartProps) {
-  const maximo = escalaMaxima(Math.max(...dias.map((d) => d.total)));
-  const linhas = [maximo, maximo / 2, 0];
-  const ultimo = dias.length - 1;
+export function WeeklyChart({ days }: WeeklyChartProps) {
+  const max = scaleMax(Math.max(...days.map((d) => d.total)));
+  const gridlines = [max, max / 2, 0];
+  const lastIndex = days.length - 1;
 
   return (
     <figure className={styles.figure}>
       <div className={styles.plot} aria-hidden>
         <div className={styles.axis}>
-          {linhas.map((valor) => (
-            <span key={valor} className={styles.tick}>
-              {valor}
+          {gridlines.map((value) => (
+            <span key={value} className={styles.tick}>
+              {value}
             </span>
           ))}
         </div>
         <div className={styles.area}>
-          {linhas.map((valor) => (
+          {gridlines.map((value) => (
             <span
-              key={valor}
-              className={clsx(styles.gridline, valor === 0 && styles.baseline)}
-              style={{ bottom: `${(valor / maximo) * 100}%` }}
+              key={value}
+              className={clsx(styles.gridline, value === 0 && styles.baseline)}
+              style={{ bottom: `${(value / max) * 100}%` }}
             />
           ))}
           <div className={styles.bars}>
-            {dias.map((dia, index) => (
-              <div key={dia.data} className={styles.column} tabIndex={0}>
+            {days.map((day, index) => (
+              <div key={day.date} className={styles.column} tabIndex={0}>
                 <span
-                  className={clsx(styles.bar, index === ultimo && styles.today)}
-                  style={{ height: `${(dia.total / maximo) * 100}%` }}
+                  className={clsx(styles.bar, index === lastIndex && styles.today)}
+                  style={{ height: `${(day.total / max) * 100}%` }}
                 />
                 <span className={styles.tooltip} role="tooltip">
                   <span className={styles.tooltipValue}>
-                    <strong>{dia.total}</strong> envio{dia.total === 1 ? '' : 's'}
+                    <strong>{day.total}</strong> envio{day.total === 1 ? '' : 's'}
                   </span>
-                  <span className={styles.tooltipDate}>{formatDate(dia.data)}</span>
+                  <span className={styles.tooltipDate}>{formatDate(day.date)}</span>
                 </span>
-                {index === ultimo && dia.total > 0 && (
-                  <span className={styles.directLabel} style={{ bottom: `${(dia.total / maximo) * 100}%` }}>
-                    {dia.total}
+                {index === lastIndex && day.total > 0 && (
+                  <span className={styles.directLabel} style={{ bottom: `${(day.total / max) * 100}%` }}>
+                    {day.total}
                   </span>
                 )}
               </div>
@@ -60,9 +60,9 @@ export function WeeklyChart({ dias }: WeeklyChartProps) {
         </div>
       </div>
       <div className={styles.labels} aria-hidden>
-        {dias.map((dia, index) => (
-          <span key={dia.data} className={clsx(index === ultimo && styles.labelToday)}>
-            {index === ultimo ? 'Hoje' : formatWeekday(dia.data)}
+        {days.map((day, index) => (
+          <span key={day.date} className={clsx(index === lastIndex && styles.labelToday)}>
+            {index === lastIndex ? 'Hoje' : formatWeekday(day.date)}
           </span>
         ))}
       </div>
@@ -76,10 +76,10 @@ export function WeeklyChart({ dias }: WeeklyChartProps) {
           </tr>
         </thead>
         <tbody>
-          {dias.map((dia) => (
-            <tr key={dia.data}>
-              <td>{formatDate(dia.data)}</td>
-              <td>{dia.total}</td>
+          {days.map((day) => (
+            <tr key={day.date}>
+              <td>{formatDate(day.date)}</td>
+              <td>{day.total}</td>
             </tr>
           ))}
         </tbody>

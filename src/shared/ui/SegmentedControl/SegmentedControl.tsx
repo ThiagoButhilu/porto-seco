@@ -20,7 +20,7 @@ interface SegmentedControlProps<T extends string> extends FieldBaseProps {
   className?: string;
 }
 
-/** Grupo de rádio com aparência de botões segmentados (acessível via teclado). */
+/** Radio group styled as segmented buttons (keyboard accessible). */
 export function SegmentedControl<T extends string>({
   name,
   value,

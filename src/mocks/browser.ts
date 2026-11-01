@@ -5,26 +5,26 @@ import { handlers } from './handlers';
 const worker = setupWorker(...handlers);
 
 /**
- * Fallback para ambientes sem Service Worker (aba anônima do Firefox, webviews,
- * políticas corporativas): intercepta `fetch` diretamente com os mesmos handlers.
+ * Fallback for environments without Service Worker support (Firefox private tabs,
+ * webviews, corporate policies): intercepts `fetch` directly with the same handlers.
  */
-function interceptarFetch() {
-  const fetchOriginal = window.fetch.bind(window);
+function interceptFetch() {
+  const originalFetch = window.fetch.bind(window);
   window.fetch = async (input, init) => {
     const request = new Request(input, init);
     if (new URL(request.url).pathname.startsWith('/api/')) {
       const response = await getResponse(handlers, request);
       if (response) return response;
     }
-    return fetchOriginal(input, init);
+    return originalFetch(input, init);
   };
 }
 
-export async function iniciarMockApi() {
+export async function startMockApi() {
   try {
     await worker.start({ onUnhandledFrame: 'bypass', quiet: true });
   } catch (error) {
-    console.warn('[mock] Service Worker indisponível, usando interceptação de fetch.', error);
-    interceptarFetch();
+    console.warn('[mock] Service Worker unavailable, falling back to fetch interception.', error);
+    interceptFetch();
   }
 }

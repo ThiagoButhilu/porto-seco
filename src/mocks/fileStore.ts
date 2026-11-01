@@ -1,6 +1,6 @@
-/** Armazena os arquivos enviados no IndexedDB para que sobrevivam a um reload. */
-const DB_NAME = 'porto-seco-mock';
-const STORE = 'arquivos';
+/** Stores uploaded files in IndexedDB so they survive a page reload. */
+const DB_NAME = 'porto-seco-mock-v2';
+const STORE = 'files';
 
 function open(): Promise<IDBDatabase> {
   return new Promise((resolve, reject) => {

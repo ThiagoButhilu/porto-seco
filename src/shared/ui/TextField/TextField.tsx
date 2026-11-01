@@ -19,7 +19,7 @@ import styles from './TextField.module.scss';
 export interface TextFieldProps
   extends FieldBaseProps,
     Omit<InputHTMLAttributes<HTMLInputElement>, 'size'> {
-  /** Máscara no formato de `domain/validation/masks` (ex.: `99/9999999-9`). */
+  /** Mask in the `domain/validation/masks` format (e.g. `99/9999999-9`). */
   mask?: string;
   showCounter?: boolean;
   icon?: IconName;

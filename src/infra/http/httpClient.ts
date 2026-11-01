@@ -65,6 +65,3 @@ export const httpClient = {
 };
 
 export type HttpClient = typeof httpClient;
-
-export const getErrorMessage = (error: unknown) =>
-  error instanceof Error ? error.message : 'Ocorreu um erro inesperado.';

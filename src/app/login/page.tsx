@@ -6,10 +6,10 @@ import styles from './page.module.scss';
 
 export const metadata: Metadata = { title: 'Entrar' };
 
-const DESTAQUES = [
-  { titulo: 'Averbação em paralelo', texto: 'Envie várias DTAs sem esperar o processamento anterior.' },
-  { titulo: 'DI e DUIMP', texto: 'Fluxo único para o modelo atual e o novo Portal Único.' },
-  { titulo: 'Rastreabilidade', texto: 'Consulte e baixe os arquivos enviados a qualquer momento.' },
+const HIGHLIGHTS = [
+  { title: 'Averbação em paralelo', text: 'Envie várias DTAs sem esperar o processamento anterior.' },
+  { title: 'DI e DUIMP', text: 'Fluxo único para o modelo atual e o novo Portal Único.' },
+  { title: 'Rastreabilidade', text: 'Consulte e baixe os arquivos enviados a qualquer momento.' },
 ];
 
 export default function LoginPage() {
@@ -23,10 +23,10 @@ export default function LoginPage() {
             Averbação de documentos de importação, do trânsito ao desembaraço.
           </h1>
           <ul className={styles.highlights}>
-            {DESTAQUES.map((item) => (
-              <li key={item.titulo}>
-                <strong>{item.titulo}</strong>
-                <span>{item.texto}</span>
+            {HIGHLIGHTS.map((item) => (
+              <li key={item.title}>
+                <strong>{item.title}</strong>
+                <span>{item.text}</span>
               </li>
             ))}
           </ul>

@@ -16,7 +16,7 @@ interface FieldProps extends FieldBaseProps {
   counter?: { current: number; max: number };
   children: ReactNode;
   className?: string;
-  /** Para grupos (radio) o rótulo é renderizado pelo próprio componente. */
+  /** For groups (radio) the label is rendered as a `<legend>`. */
   as?: 'div' | 'fieldset';
 }
 

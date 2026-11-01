@@ -1,20 +1,20 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import { SESSION_COOKIE } from '@/infra/session/sessionCookie';
 
-const ROTAS_PROTEGIDAS = ['/dashboard', '/averbacao', '/documentos'];
+const PROTECTED_ROUTES = ['/dashboard', '/endorsements', '/documents'];
 
 export function middleware(request: NextRequest) {
   const { pathname, search } = request.nextUrl;
-  const autenticado = request.cookies.has(SESSION_COOKIE);
-  const protegida = ROTAS_PROTEGIDAS.some((rota) => pathname.startsWith(rota));
+  const authenticated = request.cookies.has(SESSION_COOKIE);
+  const isProtected = PROTECTED_ROUTES.some((route) => pathname.startsWith(route));
 
-  if (protegida && !autenticado) {
+  if (isProtected && !authenticated) {
     const url = new URL('/login', request.url);
     url.searchParams.set('redirect', pathname + search);
     return NextResponse.redirect(url);
   }
 
-  if ((pathname === '/login' || pathname === '/') && autenticado) {
+  if ((pathname === '/login' || pathname === '/') && authenticated) {
     return NextResponse.redirect(new URL('/dashboard', request.url));
   }
 
@@ -26,5 +26,5 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/', '/login', '/dashboard/:path*', '/averbacao/:path*', '/documentos/:path*'],
+  matcher: ['/', '/login', '/dashboard/:path*', '/endorsements/:path*', '/documents/:path*'],
 };

@@ -1,20 +1,20 @@
 @use 'mixins' as *;
 
 :root {
-  /* Superfícies */
+  /* Surfaces */
   --color-bg: #f3f2ee;
   --color-surface: #ffffff;
   --color-surface-2: #f8f7f4;
   --color-border: #e2e0d9;
   --color-border-strong: #c9c6bc;
 
-  /* Texto */
+  /* Text */
   --color-text: #15191f;
   --color-text-2: #4b5262;
   --color-text-muted: #6f7582;
   --color-text-inverse: #ffffff;
 
-  /* Marca: azul-marinho institucional + âmbar de sinalização (cargas) */
+  /* Brand: institutional navy + signal amber (cargo yards) */
   --color-brand-950: #08172a;
   --color-brand-900: #0c2138;
   --color-brand-800: #112d4b;
@@ -27,7 +27,7 @@
   --color-accent-soft: #fdf3de;
   --color-focus: #2a78d6;
 
-  /* Status (reservados — sempre acompanhados de ícone + rótulo) */
+  /* Status (reserved — always paired with an icon + label) */
   --color-success: #17784a;
   --color-success-soft: #e2f3e9;
   --color-danger: #bf342d;
@@ -37,12 +37,12 @@
   --color-info: #1f5fae;
   --color-info-soft: #e6eef9;
 
-  /* Séries categóricas (ordem fixa, validada para daltonismo) */
-  --series-maritimo: #2a78d6;
-  --series-rodoviario: #eb6834;
-  --series-aereo: #1baf7a;
+  /* Categorical series (fixed order, validated for color blindness) */
+  --series-sea: #2a78d6;
+  --series-road: #eb6834;
+  --series-air: #1baf7a;
 
-  /* Espaçamento — escala de 4px */
+  /* Spacing — 4px scale */
   --space-1: 4px;
   --space-2: 8px;
   --space-3: 12px;

@@ -1,0 +1,58 @@
+@use 'mixins' as *;
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+
+  @include up(sm) {
+    flex-direction: row;
+    align-items: flex-start;
+  }
+}
+
+.field {
+  flex: 1;
+
+  @include up(sm) {
+    max-width: 320px;
+  }
+}
+
+.button {
+  @include up(sm) {
+    // aligns with the input (label height + gap)
+    margin-top: 25px;
+  }
+}
+
+.examples {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+}
+
+.chip {
+  @include mono;
+  padding: 3px 8px;
+  border: 1px dashed var(--color-border-strong);
+  border-radius: var(--radius-full);
+  background: var(--color-surface);
+  color: var(--color-text-2);
+  font-size: 0.75rem;
+  cursor: pointer;
+
+  &:hover {
+    border-color: var(--color-brand-600);
+    color: var(--color-brand-700);
+  }
+}

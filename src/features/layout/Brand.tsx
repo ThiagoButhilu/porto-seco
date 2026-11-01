@@ -1,7 +1,7 @@
 import clsx from 'clsx';
 import styles from './Brand.module.scss';
 
-/** Marca do sistema: contêiner estilizado + nome. */
+/** System brand: stylized container mark + name. */
 export function Brand({ inverse = false, compact = false }: { inverse?: boolean; compact?: boolean }) {
   return (
     <span className={clsx(styles.brand, inverse && styles.inverse, compact && styles.compact)}>

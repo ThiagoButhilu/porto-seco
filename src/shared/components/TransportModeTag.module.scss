@@ -1,0 +1,24 @@
+.tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8125rem;
+  color: var(--color-text);
+  white-space: nowrap;
+
+  svg {
+    color: var(--mode-color);
+  }
+
+  &[data-mode='SEA'] {
+    --mode-color: var(--series-sea);
+  }
+
+  &[data-mode='ROAD'] {
+    --mode-color: var(--series-road);
+  }
+
+  &[data-mode='AIR'] {
+    --mode-color: var(--series-air);
+  }
+}

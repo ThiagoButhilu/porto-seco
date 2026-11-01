@@ -5,12 +5,12 @@ const stylesDir = path.join(process.cwd(), 'src/shared/styles');
 
 const nextConfig: NextConfig = {
   sassOptions: {
-    // Permite `@use 'mixins' as *;` em qualquer módulo SCSS
+    // Allows `@use 'mixins' as *;` in any SCSS module
     loadPaths: [stylesDir],
     includePaths: [stylesDir],
   },
   webpack: (config, { isServer }) => {
-    // O worker do MSW só existe no browser; no bundle de servidor o módulo é ignorado
+    // The MSW worker only exists in the browser; the server bundle ignores the module
     if (isServer) config.resolve.alias = { ...config.resolve.alias, 'msw/browser': false };
     return config;
   },
